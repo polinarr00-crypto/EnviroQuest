@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Eco-Dark Theme Colors -->
+    <color name="bg_main">#0F172A</color>
+    <color name="bg_card">#1E293B</color>
+    <color name="border_light">#334155</color>
+
+    <color name="primary">#38BDF8</color> <!-- Cyan/Blue for Dark Mode looks better -->
+    <color name="primary_dark">#0284C7</color>
+    <color name="secondary">#22C55E</color> <!-- Green as secondary -->
+    <color name="accent">#FACC15</color> <!-- Bright Yellow -->
+    <color name="danger">#EF4444</color>
+
+    <color name="text_main">#FFFFFF</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+
+    <!-- Glass Effects for Dark Mode -->
+    <color name="glass_primary">#1A38BDF8</color>
+    <color name="glass_white">#1AFFFFFF</color>
+</resources>

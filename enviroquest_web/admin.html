@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnviroQuest Admin - Full System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 80px;
+            --primary-green: #198754;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background: #212529;
+            color: white;
+            position: fixed;
+            width: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed h4,
+        .sidebar.collapsed .admin-label {
+            display: none;
+        }
+
+        .nav-link {
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .nav-link i {
+            font-size: 1.25rem;
+            min-width: 35px;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: var(--primary-green);
+            color: white !important;
+        }
+
+        .toggle-sidebar-btn {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            background: none;
+            border: none;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* NOTIFICATION STYLING */
+        .notification-dropdown {
+            width: 320px;
+            max-height: 450px;
+            overflow-y: auto;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #333;
+            gap: 12px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+            color: inherit;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .nav-pills .nav-link {
+            color: #666;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-green);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- sidebar -->
+    <nav class="sidebar p-3" id="sidebar">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="text-success fw-bold m-0">EnviroQuest</h4>
+            <button class="toggle-sidebar-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+        </div>
+        <div class="admin-label small text-uppercase text-secondary fw-bold mb-3 px-2">Menu</div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link active" onclick="showSection('dashboard-section', this)"><i
+                        class="bi bi-speedometer2"></i> <span class="nav-text">Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="showSection('verification-section', this)"><i
+                        class="bi bi-shield-check"></i> <span class="nav-text">Verification</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="showSection('quest-section', this)"><i
+                        class="bi bi-trophy"></i> <span class="nav-text">Quests</span></a></li>
+            <li class="nav-item"><a class="nav-link" onclick="showSection('users-section', this)"><i
+                        class="bi bi-people-fill"></i> <span class="nav-text">User Accounts</span></a></li>
+            <li class="nav-item mt-auto"><a class="nav-link text-danger" onclick="logoutAdmin()"><i
+                        class="bi bi-box-arrow-right"></i> <span class="nav-text">Logout</span></a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content" id="mainContent">
+
+        <!-- notification -->
+        <div class="d-flex justify-content-end align-items-center mb-4">
+            <div class="dropdown">
+                <button class="btn btn-white bg-white shadow-sm rounded-pill px-3 position-relative border"
+                    type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-bell-fill text-success"></i>
+                    <span id="notif-badge"
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="display: none; margin-top: 5px; margin-left: -10px;">0</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end notification-dropdown p-0">
+                    <div class="p-3 border-bottom">
+                        <h6 class="fw-bold mb-0">Notifications</h6>
+                    </div>
+                    <div id="notification-list">
+                        <div class="p-3 text-center text-muted small">No new notifications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- dashboard -->
+        <div id="dashboard-section" class="content-section active">
+            <h2 class="fw-bold mb-4">Admin Overview</h2>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card p-3 border-start border-primary border-5"><small class="text-muted fw-bold">TOTAL
+                            RESIDENTS</small>
+                        <h3 class="fw-bold mb-0" id="stat-total">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 border-start border-warning border-5"><small class="text-muted fw-bold">PENDING
+                            APPROVAL</small>
+                        <h3 class="fw-bold mb-0" id="stat-pending">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 border-start border-danger border-5"><small class="text-muted fw-bold">REJECTED
+                            USERS</small>
+                        <h3 class="fw-bold mb-0" id="stat-rejected">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="verification-section" class="content-section">
+            <h2 class="fw-bold mb-4">Waste Verification</h2>
+            <div class="card overflow-hidden">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Resident</th>
+                            <th>Proof</th>
+                            <th>Type</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="text-center p-4 text-muted">No pending verifications.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quest Management -->
+        <div id="quest-section" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold m-0">Quest Management</h2>
+                <button class="btn btn-success fw-bold" onclick="toggleQuestForm()">
+                    <i class="bi bi-plus-lg"></i> New Quest
+                </button>
+            </div>
+
+            <ul class="nav nav-pills mb-3 bg-white p-2 rounded shadow-sm" id="questTabs">
+                <li class="nav-item">
+                    <button class="nav-link active fw-bold" onclick="switchQuestTab('active', this)">Active Quests</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link fw-bold" onclick="switchQuestTab('trash', this)">Trash Bin <i class="bi bi-trash3"></i></button>
+                </li>
+            </ul>
+
+            <div id="quest-list-view">
+                <div id="active-quests-table" class="card overflow-hidden">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Quest Name</th>
+                                <th>Points</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="questTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="trash-quests-table" class="card overflow-hidden" style="display: none;">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-danger text-white">
+                            <tr>
+                                <th>Deleted Quest</th>
+                                <th>Points</th>
+                                <th>Deleted Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trashTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="quest-form-view" style="display: none;">
+                <div class="card p-4 shadow-sm border-top border-success border-4">
+                    <h5 class="fw-bold mb-3">Create New Quest</h5>
+                    <form id="questForm" onsubmit="createQuest(event)">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quest Title</label>
+                            <input type="text" id="questTitle" class="form-control" placeholder="Ex: Clean Up Park" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Reward Points</label>
+                            <input type="number" id="questPoints" class="form-control" placeholder="Ex: 50" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea id="questDesc" class="form-control" rows="3" placeholder="Explain what the user needs to do..." required></textarea>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success px-4 fw-bold">Save Quest</button>
+                            <button type="button" class="btn btn-light px-4" onclick="toggleQuestForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Account -->
+        <div id="users-section" class="content-section">
+            <h2 class="fw-bold mb-4">User Account Management</h2>
+            <ul class="nav nav-pills mb-4 bg-white p-2 rounded shadow-sm" id="userTabs">
+                <li class="nav-item"><button class="nav-link active fw-bold"
+                        onclick="switchUserTab('pending', this)">Pending <span id="pendingCount"
+                            class="badge bg-danger ms-1">0</span></button></li>
+                <li class="nav-item"><button class="nav-link fw-bold"
+                        onclick="switchUserTab('approved', this)">Approved</button></li>
+                <li class="nav-item"><button class="nav-link fw-bold"
+                        onclick="switchUserTab('rejected', this)">Rejected</button></li>
+            </ul>
+
+            <div id="view-pending" class="user-tab-content">
+                <div class="card shadow-sm border-top border-warning border-4 overflow-hidden">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Resident</th>
+                                <th>Address</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-approved" class="user-tab-content" style="display:none;">
+                <div class="card shadow-sm border-top border-success border-4 overflow-hidden">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Resident</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvedTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-rejected" class="user-tab-content" style="display:none;">
+                <div class="card shadow-sm border-top border-danger border-4 overflow-hidden">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Resident</th>
+                                <th>Address</th>
+                                <th>Reason</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rejectedTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbJ8rFzwJWldBueoA76OP7ajSXDGyMdH8",
+            authDomain: "enviroquest-4bb68.firebaseapp.com",
+            projectId: "enviroquest-4bb68",
+            storageBucket: "enviroquest-4bb68.firebasestorage.app",
+            messagingSenderId: "633387091098",
+            appId: "1:633387091098:web:b4824a35c6acf13e6c4b23"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        // AUTH GUARD
+        auth.onAuthStateChanged(user => { if (!user) window.location.href = "login.html"; });
+        // REAL-TIME PENDING & NOTIFICATIONS
+        db.collection("Users").where("status", "==", "pending").onSnapshot(snap => {
+            const table = document.getElementById('pendingTableBody');
+            const badge = document.getElementById('notif-badge');
+            const list = document.getElementById('notification-list');
+            document.getElementById('pendingCount').innerText = snap.size;
+            document.getElementById('stat-pending').innerText = snap.size;
+
+            if (snap.size > 0) {
+                badge.innerText = snap.size; badge.style.display = "block";
+            } else {
+                badge.style.display = "none";
+            }
+            let tableHtml = ""; let notifHtml = "";
+            snap.forEach(doc => {
+                const u = doc.data(); const id = doc.id;
+                tableHtml += `<tr><td class="ps-4"><b>${u.fullname}</b><br><small>${u.email}</small></td>
+                            <td>${u.address}</td><td>${u.dateRegistered || 'N/A'}</td>
+                            <td><button class="btn btn-sm btn-success me-1" onclick="approveUser('${id}', '${u.fullname}')">Approve</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="rejectUser('${id}', '${u.fullname}')">Reject</button></td></tr>`;
+
+                notifHtml += `<a href="#" class="notification-item" onclick="showSection('users-section')">
+                            <div class="notification-icon bg-primary text-white"><i class="bi bi-person-plus"></i></div>
+                            <div><div class="small fw-bold">New Registration</div><div class="small text-muted">${u.fullname} is waiting.</div></div></a>`;
+            });
+            table.innerHTML = tableHtml || '<tr><td colspan="4" class="text-center p-4">No pending requests.</td></tr>';
+            list.innerHTML = notifHtml || '<div class="p-3 text-center text-muted small">No new notifications</div>';
+        });
+        // APPROVED USERS
+        db.collection("Users").where("status", "==", "approved").onSnapshot(snap => {
+            const table = document.getElementById('approvedTableBody');
+            document.getElementById('stat-total').innerText = snap.size;
+            let html = "";
+            snap.forEach(doc => {
+                const u = doc.data();
+                html += `<tr><td class="ps-4"><b>${u.fullname}</b></td>
+                        <td>${u.address}</td>
+                        <td><span class="badge bg-success">Verified</span></td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="rejectUser('${doc.id}', '${u.fullname}')"><i class="bi bi-person-x"></i></button></td>
+                        </tr>`;
+            });
+            table.innerHTML = html || '<tr><td colspan="4" class="text-center p-4">No approved users.</td></tr>';
+        });
+        // REJECTED USERS
+        db.collection("Users").where("status", "==", "rejected").onSnapshot(snap => {
+            const table = document.getElementById('rejectedTableBody');
+            document.getElementById('stat-rejected').innerText = snap.size;
+            let html = "";
+            snap.forEach(doc => {
+                const u = doc.data();
+                html += `<tr><td class="ps-4"><b>${u.fullname}</b>
+                        </td><td>${u.address}</td>
+                        <td class="text-muted small"><i>${u.rejectReason || 'No reason'}</i></td>
+                        <td><button class="btn btn-sm btn-outline-success" onclick="restoreUser('${doc.id}')"><i class="bi bi-arrow-clockwise"></i> Restore</button></td></tr>`;
+            });
+            table.innerHTML = html || '<tr><td colspan="4" class="text-center p-4">No rejected users.</td></tr>';
+        });
+        // ACTIONS
+        function approveUser(id, name) {
+            if (confirm(`Approve ${name}?`)) db.collection("Users").doc(id).update({ status: "approved", dateApproved: new Date().toLocaleString() });
+        }
+        function rejectUser(id, name) {
+            const reason = prompt(`Ngano i-reject si ${name}? (Ex: Not a resident of this Brgy)`);
+            if (reason) db.collection("Users").doc(id).update({ status: "rejected", rejectReason: reason, dateRejected: new Date().toLocaleString() });
+        }
+        function restoreUser(id) {
+            if (confirm("Ibalik ni sa Pending?")) db.collection("Users").doc(id).update({ status: "pending", rejectReason: firebase.firestore.FieldValue.delete() });
+        }
+        function logoutAdmin() { if (confirm("Logout?")) auth.signOut().then(() => window.location.href = "login.html"); }
+
+
+        // Verification 
+        db.collection("Submissions").where("status", "==", "Pending").onSnapshot(async snap => {
+            const tableBody = document.querySelector("#verification-section tbody");
+            
+            if (snap.empty) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-muted">No pending verifications.</td></tr>';
+                return;
+            }
+
+            let rowsHtml = "";
+
+            // Gigamit nato ang Promise.all para dungan ma-fetch ang info sa matag user
+            const submissionPromises = snap.docs.map(async (submissionDoc) => {
+                const subData = submissionDoc.data();
+                const subId = submissionDoc.id;
+
+                // I-fetch ang User details base sa userId
+                const userDoc = await db.collection("Users").doc(subData.userId).get();
+                const userData = userDoc.exists ? userDoc.data() : { fullname: "Unknown", address: "No Address" };
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="fw-bold">${userData.fullname}</div>
+                            <small class="text-muted">${userData.address}</small>
+                        </td>
+                        <td>
+                            <a href="${subData.proofImageUrl}" target="_blank">
+                                <img src="${subData.proofImageUrl}" alt="Proof" 
+                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
+                            </a>
+                        </td>
+                        <td><span class="badge bg-info text-dark">${subData.questTitle}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="handleVerification('${subId}', '${subData.userId}', '${subData.questId}', 'Approved')">Approve</button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="handleVerification('${subId}', '${subData.userId}', '${subData.questId}', 'Rejected')">Decline</button>
+                        </td>
+                    </tr>`;
+            });
+
+            const allRows = await Promise.all(submissionPromises);
+            tableBody.innerHTML = allRows.join('');
+        });
+
+        async function handleVerification(submissionId, userId, questId, newStatus) {
+            if (!confirm(`Sigurado ka sa pag-${newStatus} niini?`)) return;
+            try {
+                const batch = db.batch();
+                const submissionRef = db.collection("Submissions").doc(submissionId);
+                
+                batch.update(submissionRef, { status: newStatus, verifiedAt: new Date().toLocaleString() });
+
+                if (newStatus === 'Approved') {
+                    const questDoc = await db.collection("Quests").doc(questId).get();
+                    if (questDoc.exists) {
+                        const pointsToAdd = questDoc.data().points || 0;
+                        batch.update(db.collection("Users").doc(userId), {
+                            totalPoints: firebase.firestore.FieldValue.increment(pointsToAdd)
+                        });
+                    }
+                }
+                await batch.commit();
+                alert(`Success: Submission ${newStatus}!`);
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        // Quest Management
+        // DISPLAY ACTIVE QUESTS
+        db.collection("Quests").where("status", "==", "Active").onSnapshot(snap => {
+            
+            const questTable = document.getElementById('questTableBody');
+            if (!questTable) return;
+
+            let html = "";
+            
+            const docs = [];
+            snap.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+            
+            docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+            docs.forEach(q => {
+                html += `
+                    <tr>
+                        <td>
+                            <div class="fw-bold">${q.title}</div>
+                            <small class="text-muted">${q.description ? q.description.substring(0, 40) : ''}...</small>
+                        </td>
+                        <td><span class="badge bg-primary">${q.points} pts</span></td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="moveToTrash('${q.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+
+            questTable.innerHTML = html || '<tr><td colspan="4" class="text-center p-4">No active quests found.</td></tr>';
+        }, error => {
+            console.error("Firestore Error:", error.message);
+            alert("Database Error: " + error.message);
+        });
+        // DISPLAY TRASH BIN
+        db.collection("Quests").where("status", "==", "Trash").onSnapshot(snap => {
+            const trashTable = document.getElementById('trashTableBody');
+            let html = "";
+            snap.forEach(doc => {
+                const q = doc.data();
+                html += `
+                    <tr class="table-light">
+                        <td><div class="fw-bold text-secondary text-decoration-line-through">${q.title}</div></td>
+                        <td>${q.points} pts</td>
+                        <td class="small text-muted">${q.deletedAt || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" title="Restore" onclick="restoreQuest('${doc.id}')"><i class="bi bi-arrow-clockwise"></i></button>
+                            <button class="btn btn-sm btn-danger" title="Permanent Delete" onclick="permanentDeleteQuest('${doc.id}')"><i class="bi bi-x-circle"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            trashTable.innerHTML = html || '<tr><td colspan="4" class="text-center p-4">Trash bin is empty.</td></tr>';
+        });
+        // CREATE QUEST LOGIC
+        function createQuest(event) {
+            event.preventDefault();
+            const title = document.getElementById('questTitle').value;
+            const points = document.getElementById('questPoints').value;
+            const desc = document.getElementById('questDesc').value;
+
+            db.collection("Quests").add({
+                title: title,
+                points: parseInt(points),
+                description: desc,
+                status: "Active",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert("Quest successfully added!");
+                document.getElementById('questForm').reset();
+                toggleQuestForm(); 
+            }).catch(err => alert("Error: " + err.message));
+        }
+        // SOFT DELETE (MOVE TO TRASH)
+        function moveToTrash(id) {
+            if(confirm("I-balhin ni nga quest sa Trash Bin?")) {
+                db.collection("Quests").doc(id).update({ 
+                    status: "Trash",
+                    deletedAt: new Date().toLocaleString()
+                });
+            }
+        }
+        // RESTORE FROM TRASH
+        function restoreQuest(id) {
+            if(confirm("I-restore ni nga quest padung sa Active list?")) {
+                db.collection("Quests").doc(id).update({ 
+                    status: "Active",
+                    deletedAt: firebase.firestore.FieldValue.delete()
+                });
+            }
+        }
+        // PERMANENT DELETE
+        function permanentDeleteQuest(id) {
+            if(confirm("WARNING: Dili na gyud ni ma-restore. I-delete na gyud sa database?")) {
+                db.collection("Quests").doc(id).delete();
+            }
+        }
+        // UI TOGGLES
+        function toggleQuestForm() {
+            const listView = document.getElementById('quest-list-view');
+            const formView = document.getElementById('quest-form-view');
+            const tabs = document.getElementById('questTabs');
+            
+            if (formView.style.display === "none") {
+                formView.style.display = "block";
+                listView.style.display = "none";
+                tabs.style.display = "none";
+            } else {
+                formView.style.display = "none";
+                listView.style.display = "block";
+                tabs.style.display = "flex"; 
+            }
+        }
+        function switchQuestTab(tab, btn) {
+            document.getElementById('active-quests-table').style.display = (tab === 'active') ? 'block' : 'none';
+            document.getElementById('trash-quests-table').style.display = (tab === 'trash') ? 'block' : 'none';
+            document.querySelectorAll('#questTabs .nav-link').forEach(l => l.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+
+
+        // sidebar NAVIGATION
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('mainContent').classList.toggle('expanded');
+        }
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
+        function switchUserTab(tab, btn) {
+            document.querySelectorAll('.user-tab-content').forEach(c => c.style.display = 'none');
+            document.getElementById('view-' + tab).style.display = 'block';
+            document.querySelectorAll('#userTabs .nav-link').forEach(l => l.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

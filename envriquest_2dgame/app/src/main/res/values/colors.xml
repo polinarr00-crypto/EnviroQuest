@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Eco-Light Theme Colors -->
+    <color name="bg_main">#F8FAFC</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="border_light">#E2E8F0</color>
+
+    <color name="primary">#22C55E</color> <!-- Nature Green -->
+    <color name="primary_dark">#15803D</color>
+    <color name="secondary">#0EA5E9</color> <!-- Sky Blue -->
+    <color name="accent">#F59E0B</color> <!-- Amber/Gold -->
+    <color name="danger">#EF4444</color>
+
+    <color name="text_main">#0F172A</color> <!-- Deep Slate -->
+    <color name="text_secondary">#64748B</color> <!-- Slate Gray -->
+    <color name="text_muted">#94A3B8</color>
+
+    <!-- Glass Effects for Light Mode -->
+    <color name="glass_primary">#1A22C55E</color>
+    <color name="glass_white">#CCFFFFFF</color>
+</resources>

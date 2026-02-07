@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "633387091098",
+    "project_id": "enviroquest-4bb68",
+    "storage_bucket": "enviroquest-4bb68.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633387091098:android:41e72585acf075396c4b23",
+        "android_client_info": {
+          "package_name": "com.example.enviroquest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1AuIplATIVsXkdSizclCtMoDpLpnjX54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

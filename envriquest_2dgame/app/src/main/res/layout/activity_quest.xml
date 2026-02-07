@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp">
+
+            <ImageButton
+                android:id="@+id/btn_back_quest_details"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-black"
+                android:text="MISSION LOG"
+                android:textColor="@color/text_main"
+                android:textSize="20sp"
+                android:letterSpacing="0.1" />
+        </RelativeLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/border_light"
+            android:layout_marginBottom="25dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CURRENT CHALLENGE"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-black"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tv_quest_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quest Title"
+                    android:textSize="26sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="@color/text_main"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/tv_instruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Loading instructions..."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="15sp"
+                    android:lineSpacingExtra="6dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/btn_star_big_on"
+                        app:tint="@color/accent"/>
+
+                    <TextView
+                        android:id="@+id/tv_quest_points_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+0 Points"
+                        android:textColor="@color/accent"
+                        android:textSize="18sp"
+                        android:fontFamily="sans-serif-black"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:text="UPLOAD PROOF"
+                    android:fontFamily="sans-serif-black"
+                    app:cornerRadius="16dp"
+                    android:backgroundTint="@color/primary"
+                    app:icon="@android:drawable/ic_menu_camera"
+                    app:iconGravity="textStart" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/text_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MISSION PREVIEW"
+            android:textColor="@color/text_secondary"
+            android:fontFamily="sans-serif-bold"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/bg_main"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/border_light"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_report_image"
+                android:visibility="visible"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_quest"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:text="FINISH QUEST"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/primary"
+            android:fontFamily="sans-serif-black"
+            android:textSize="18sp"
+            app:cornerRadius="20dp"
+            android:elevation="4dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</ScrollView>

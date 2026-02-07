@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#BAE6FD"> <!-- Vibrant Sky Blue -->
+
+    <com.example.enviroquest.game.GameView
+        android:id="@+id/gameView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Sunny Vignette Overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/vignette_overlay"
+        android:alpha="0.4"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <!-- HUD Container -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_hud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Stats Group -->
+        <LinearLayout
+            android:id="@+id/stats_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/energy_layout_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/hud_bg_rounded"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:elevation="4dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@android:drawable/btn_star_big_on"
+                    app:tint="#F59E0B" />
+
+                <TextView
+                    android:id="@+id/tv_game_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="ENERGY: 0"
+                    android:textColor="#0369A1"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/hud_bg_rounded"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:elevation="4dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_menu_delete"
+                    app:tint="#16A34A" />
+
+                <TextView
+                    android:id="@+id/tv_trash_count_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="BASURA"
+                    android:textColor="#374151"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tv_trash_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/badge_bg_green"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif-black" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Timer -->
+        <TextView
+            android:id="@+id/tv_game_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/hud_bg_rounded"
+            android:elevation="6dp"
+            android:fontFamily="sans-serif-black"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="10dp"
+            android:text="00:60"
+            android:textColor="#DC2626"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Menu Button -->
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/hud_bg_rounded"
+            android:elevation="4dp"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_sort_by_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#0369A1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Controls -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/controls_layout"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/dpad_outer_ring"
+        android:alpha="0.8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/joystick_center"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/joystick_thumb"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- D-Pad indicators -->
+        <ImageButton android:id="@+id/btn_up" android:layout_width="32dp" android:layout_height="32dp" android:background="@android:color/transparent" android:clickable="false" android:src="@android:drawable/arrow_up_float" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:tint="#800284C7" />
+        <ImageButton android:id="@+id/btn_down" android:layout_width="32dp" android:layout_height="32dp" android:background="@android:color/transparent" android:clickable="false" android:rotation="180" android:src="@android:drawable/arrow_up_float" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:tint="#800284C7" />
+        <ImageButton android:id="@+id/btn_left" android:layout_width="32dp" android:layout_height="32dp" android:background="@android:color/transparent" android:clickable="false" android:rotation="-90" android:src="@android:drawable/arrow_up_float" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:tint="#800284C7" />
+        <ImageButton android:id="@+id/btn_right" android:layout_width="32dp" android:layout_height="32dp" android:background="@android:color/transparent" android:clickable="false" android:rotation="90" android:src="@android:drawable/arrow_up_float" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" app:tint="#800284C7" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Action Buttons -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/action_buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Button B -->
+        <FrameLayout
+            android:id="@+id/frame_b"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/action_btn_bg"
+            android:backgroundTint="#EF4444"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/frame_a">
+
+            <ImageButton
+                android:id="@+id/btn_b"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="sans-serif-black"
+                android:text="B"
+                android:textColor="#CCFFFFFF"
+                android:textSize="11sp" />
+        </FrameLayout>
+
+        <!-- Inventory Button -->
+        <FrameLayout
+            android:id="@+id/frame_inventory"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/action_btn_bg"
+            android:backgroundTint="#64748B"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toTopOf="@id/frame_a"
+            app:layout_constraintEnd_toEndOf="@id/frame_a"
+            app:layout_constraintStart_toStartOf="@id/frame_a">
+
+            <ImageButton
+                android:id="@+id/btn_inventory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_inventory_bag"
+                app:tint="#FFFFFF" />
+        </FrameLayout>
+
+        <!-- Button A -->
+        <FrameLayout
+            android:id="@+id/frame_a"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:background="@drawable/action_btn_bg"
+            android:backgroundTint="#22C55E"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_a"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="24dp"
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_input_add"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="6dp"
+                android:fontFamily="sans-serif-black"
+                android:text="A"
+                android:textColor="#CCFFFFFF"
+                android:textSize="14sp" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

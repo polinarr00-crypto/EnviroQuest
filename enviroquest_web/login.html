@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnviroQuest Admin - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background: #f4f7f6; height: 100vh; display: flex; align-items: center; }
+        .login-card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn-success { border-radius: 10px; padding: 12px; font-weight: bold; }
+        .form-control { border-radius: 10px; padding: 12px; }
+        .password-container { position: relative; }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card login-card p-4">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-success">EnviroQuest</h2>
+                    <p class="text-muted">Admin Control Panel</p>
+                </div>
+                
+                <form id="adminLoginForm">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Admin Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="admin@enviroquest.com" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Password</label>
+                        <div class="password-container">
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                            <i class="bi bi-eye-slash toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100 mb-3">Login as Admin</button>
+                </form>
+                
+                <div class="text-center">
+                    <small class="text-muted">Restricted Access. Authorized personnel only.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbJ8rFzwJWldBueoA76OP7ajSXDGyMdH8",
+        authDomain: "enviroquest-4bb68.firebaseapp.com",
+        projectId: "enviroquest-4bb68",
+        storageBucket: "enviroquest-4bb68.firebasestorage.app",
+        messagingSenderId: "633387091098",
+        appId: "1:633387091098:web:b4824a35c6acf13e6c4b23"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const isPassword = passwordField.type === 'password';
+        
+        passwordField.type = isPassword ? 'text' : 'password';
+        eyeIcon.classList.toggle('bi-eye-slash', !isPassword);
+        eyeIcon.classList.toggle('bi-eye', isPassword);
+    }
+
+    document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const btn = e.target.querySelector('button');
+
+        btn.innerText = "Verifying Admin...";
+        btn.disabled = true;
+
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                return db.collection("Admin").doc(userCredential.user.uid).get();
+            })
+            .then((doc) => {
+                if (doc.exists && doc.data().Role === "admin") {
+                    window.location.href = "admin.html"; 
+                } else {
+                    alert("Access Denied: You do not have admin privileges.");
+                    auth.signOut();
+                    resetButton(btn);
+                }
+            })
+            .catch((error) => {
+                alert("Login failed. Please check your credentials.");
+                resetButton(btn);
+            });
+    });
+
+    function resetButton(btn) {
+        btn.innerText = "Login as Admin";
+        btn.disabled = false;
+    }
+</script>
+
+</body>
+</html>
